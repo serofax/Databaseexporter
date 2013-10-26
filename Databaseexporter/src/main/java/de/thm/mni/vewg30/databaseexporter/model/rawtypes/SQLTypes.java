@@ -1,8 +1,13 @@
 package de.thm.mni.vewg30.databaseexporter.model.rawtypes;
 
 import java.sql.Types;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 
 import de.thm.mni.vewg30.databaseexporter.model.Column;
@@ -19,25 +24,62 @@ public enum SQLTypes {
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSet(column);
 		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return (String) object;
+		}
 	}, //
-	DATE(Types.DATE, "date"), //
+	DATE(Types.DATE, "date") {
+		private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+		@Override
+		public String getFormattedString(Object object) {
+
+			return formatter.format((Date) object);
+		}
+	}, //
 	DECIMAL(Types.DECIMAL, "decimal") {
+		private DecimalFormat formatter = (DecimalFormat) NumberFormat
+				.getNumberInstance(Locale.US);
+
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSetAndDecimalPrecision(column);
 		}
-	}, // , //
+
+		@Override
+		public String getFormattedString(Object object) {
+			return formatter.format((Double) object);
+		}
+	}, //
 	DOUBLE(Types.DOUBLE, "double") {
+		private DecimalFormat formatter = (DecimalFormat) NumberFormat
+				.getNumberInstance(Locale.US);
+
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSetAndDecimalPrecision(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return formatter.format((Double) object);
 		}
 	}, //
 
 	FLOAT(Types.FLOAT, "float") {
+		private DecimalFormat formatter = (DecimalFormat) NumberFormat
+				.getNumberInstance(Locale.US);
+
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSetAndDecimalPrecision(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return formatter.format((Float) object);
 		}
 	}, //
 
@@ -46,27 +88,79 @@ public enum SQLTypes {
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSet(column);
 		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return ((Integer) object).toString();
+		}
 	}, //
-	NUMERIC(Types.NUMERIC, "numeric"), //
-	REAL(Types.REAL, "real") {
+	NUMERIC(Types.NUMERIC, "numeric") {
+		private DecimalFormat formatter = (DecimalFormat) NumberFormat
+				.getNumberInstance(Locale.US);
+
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSetAndDecimalPrecision(column);
 		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return formatter.format((Double) object);
+		}
+	}, //
+	REAL(Types.REAL, "real") {
+		
+		private DecimalFormat formatter = (DecimalFormat) NumberFormat
+				.getNumberInstance(Locale.US);
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSetAndDecimalPrecision(column);
+		}
+		
+		@Override
+		public String getFormattedString(Object object) {
+			return formatter.format((Double) object);
+		}
+		
 	}, //
 
-	TIME(Types.TIME, "time"), //
-	TIMESTAMP(Types.TIMESTAMP, "timestamp"), //
+	TIME(Types.TIME, "time") {
+		private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+				
+		@Override
+		public String getFormattedString(Object object) {
+			return formatter.format((Date)object);
+		}
+	}, //
+	TIMESTAMP(Types.TIMESTAMP, "timestamp") {
+		private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		@Override
+		public String getFormattedString(Object object) {
+			return formatter.format((Date)object);
+		}
+	}, //
 	TINYINT(Types.TINYINT, "tinyint") {
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return ((Integer)object).toString();
+			
 		}
 	}, //
 	VARCHAR(Types.VARCHAR, "varchar") {
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return (String)object;
 		}
 	} //
 
@@ -75,8 +169,13 @@ public enum SQLTypes {
 	private int javaTypeInt;
 	private String sqlLiteral;
 
-	public String getDDLColumnLength(Column column) {
-		return "";
+	private static Map<Integer, SQLTypes> types = new HashMap<Integer, SQLTypes>(
+			SQLTypes.values().length);
+
+	static {
+		for (SQLTypes type : SQLTypes.values()) {
+			types.put(type.javaTypeInt, type);
+		}
 	}
 
 	private static String getOnlyColumnLengthIfSet(Column column) {
@@ -101,14 +200,11 @@ public enum SQLTypes {
 		return result;
 	}
 
-	private static Map<Integer, SQLTypes> types = new HashMap<Integer, SQLTypes>(
-			SQLTypes.values().length);
-
-	static {
-		for (SQLTypes type : SQLTypes.values()) {
-			types.put(type.javaTypeInt, type);
-		}
+	public String getDDLColumnLength(Column column) {
+		return "";
 	}
+
+	public abstract String getFormattedString(Object object);
 
 	private SQLTypes(int javaType, String sqlLiteral) {
 		this.javaTypeInt = javaType;

@@ -11,11 +11,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import org.ietf.jgss.Oid;
 
 import de.thm.mni.vewg30.databaseexporter.ddl.DDLModelEnhancer;
 import de.thm.mni.vewg30.databaseexporter.ddl.DDLRawModelExtractor;
+import de.thm.mni.vewg30.databaseexporter.dml.DMLModelExtractor;
 import de.thm.mni.vewg30.databaseexporter.model.Column;
 import de.thm.mni.vewg30.databaseexporter.model.Database;
 import de.thm.mni.vewg30.databaseexporter.model.Table;
@@ -53,11 +55,15 @@ public class Test {
 			DDLModelEnhancer enhancer = new DDLModelEnhancer(metaData);
 			Database database = extractor.getDatabase();
 			enhancer.enhanceDatabase(database);
+			DMLModelExtractor dmlExtractor = new DMLModelExtractor(con);
+			database = dmlExtractor.getDatabaseWithData(database);
+			
 			DDLDatabaseWriter writer = new DDLDatabaseWriter(
 					new OutputStreamWriter(System.out));
 			writer.writeDatabase(database);
 			writer.flush();
 			System.out.println("finished");
+			
 
 //			for (Table table : database.getTables().values()) {
 //				for (Column column : table.getColumns().values()) {

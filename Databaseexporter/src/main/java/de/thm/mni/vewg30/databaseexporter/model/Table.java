@@ -13,6 +13,8 @@ public class Table {
 
 	private Set<ForeignKeyReference> parentTableForeignKeys = new HashSet<ForeignKeyReference>();
 	private Set<ForeignKeyReference> childTableForeignKeys = new HashSet<ForeignKeyReference>();
+	
+	private Set<Row> rows = new HashSet<Row>();
 
 	public Table(String tableName) {
 		this.tableName = tableName;
@@ -58,6 +60,14 @@ public class Table {
 		this.childTableForeignKeys = childTableForeignKeys;
 	}
 
+	public Set<Row> getRows() {
+		return rows;
+	}
+
+	public void setRows(Set<Row> rows) {
+		this.rows = rows;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -73,6 +83,7 @@ public class Table {
 						: parentTableForeignKeys.hashCode());
 		result = prime * result
 				+ ((primaryKeys == null) ? 0 : primaryKeys.hashCode());
+		result = prime * result + ((rows == null) ? 0 : rows.hashCode());
 		result = prime * result
 				+ ((tableName == null) ? 0 : tableName.hashCode());
 		return result;
@@ -84,7 +95,7 @@ public class Table {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Table))
 			return false;
 		Table other = (Table) obj;
 		if (childTableForeignKeys == null) {
@@ -107,6 +118,11 @@ public class Table {
 				return false;
 		} else if (!primaryKeys.equals(other.primaryKeys))
 			return false;
+		if (rows == null) {
+			if (other.rows != null)
+				return false;
+		} else if (!rows.equals(other.rows))
+			return false;
 		if (tableName == null) {
 			if (other.tableName != null)
 				return false;
@@ -114,5 +130,7 @@ public class Table {
 			return false;
 		return true;
 	}
+
+	
 
 }
