@@ -1,9 +1,11 @@
-package de.thm.mni.vewg30.databaseexporter.model;
+package de.thm.mni.vewg30.databaseexporter.model.rawtypes;
 
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
+import de.thm.mni.vewg30.databaseexporter.model.Column;
 
 /**
  * The most important SQL Types

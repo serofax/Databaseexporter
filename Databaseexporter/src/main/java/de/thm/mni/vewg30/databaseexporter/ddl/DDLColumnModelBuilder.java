@@ -8,9 +8,9 @@ import java.text.MessageFormat;
 import org.apache.log4j.Logger;
 
 import de.thm.mni.vewg30.databaseexporter.model.Column;
-import de.thm.mni.vewg30.databaseexporter.model.SQLNullType;
-import de.thm.mni.vewg30.databaseexporter.model.SQLTypes;
 import de.thm.mni.vewg30.databaseexporter.model.Table;
+import de.thm.mni.vewg30.databaseexporter.model.rawtypes.SQLNullType;
+import de.thm.mni.vewg30.databaseexporter.model.rawtypes.SQLTypes;
 
 public class DDLColumnModelBuilder {
 	private static final Logger log = Logger.getLogger(DDLColumnModelBuilder.class);

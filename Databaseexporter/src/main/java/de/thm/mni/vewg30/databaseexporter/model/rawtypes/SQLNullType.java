@@ -1,8 +1,10 @@
-package de.thm.mni.vewg30.databaseexporter.model;
+package de.thm.mni.vewg30.databaseexporter.model.rawtypes;
 
 import java.sql.DatabaseMetaData;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.thm.mni.vewg30.databaseexporter.model.Column;
 
 public enum SQLNullType {
 	NOT_NULL(DatabaseMetaData.columnNoNulls) {

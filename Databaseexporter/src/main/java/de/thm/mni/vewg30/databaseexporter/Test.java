@@ -53,17 +53,11 @@ public class Test {
 			DDLModelEnhancer enhancer = new DDLModelEnhancer(metaData);
 			Database database = extractor.getDatabase();
 			enhancer.enhanceDatabase(database);
-
-
-			
-			
-			
-			
 			DDLDatabaseWriter writer = new DDLDatabaseWriter(
 					new OutputStreamWriter(System.out));
 			writer.writeDatabase(database);
 			writer.flush();
-//			System.out.println("finished");
+			System.out.println("finished");
 
 //			for (Table table : database.getTables().values()) {
 //				for (Column column : table.getColumns().values()) {

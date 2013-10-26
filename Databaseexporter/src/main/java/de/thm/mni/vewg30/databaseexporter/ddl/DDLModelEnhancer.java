@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import de.thm.mni.vewg30.databaseexporter.model.Column;
 import de.thm.mni.vewg30.databaseexporter.model.Database;
+import de.thm.mni.vewg30.databaseexporter.model.ForeignKeyReference;
 import de.thm.mni.vewg30.databaseexporter.model.Table;
 
 public class DDLModelEnhancer {
@@ -18,7 +19,7 @@ public class DDLModelEnhancer {
 	private DatabaseMetaData databaseMetaData;
 
 	public DDLModelEnhancer(DatabaseMetaData databaseMetaData) {
-		//TODO
+		// TODO
 		this.databaseMetaData = databaseMetaData;
 	}
 
@@ -55,7 +56,9 @@ public class DDLModelEnhancer {
 			while (rs.next()) {
 				String columnName = rs.getString("COLUMN_NAME");
 				Column column = table.getColumns().get(columnName);
-				column.setPrimaryKey(true);
+				table.getPrimaryKeys().add(column);
+
+				// column.setPrimaryKey(true);
 			}
 		} finally {
 			if (rs != null) {
@@ -66,8 +69,78 @@ public class DDLModelEnhancer {
 
 	}
 
-	public Database enhanceWithReferences(Database database) {
+	public Database enhanceWithReferences(Database database)
+			throws SQLException {
+		log.debug("start enhanceWithReferences");
+
+		for (Table table : database.getTables().values()) {
+			if (log.isDebugEnabled()) {
+				log.debug(MessageFormat.format(
+						"do foreignKeyReference for table [{0}]",
+						table.getTableName()));
+			}
+			ResultSet rs = null;
+			try {
+				rs = databaseMetaData.getImportedKeys(null, null,
+						table.getTableName());
+				while(rs.next()){
+					ForeignKeyReference fkRef = getForeignKeyReference(rs,database);
+					fkRef.performDataConssistency();
+				}
+				
+				
+				
+				
+//				log.debug("----import keys in table " + table.getTableName());
+//				while (rs.next()) {
+//					log.debug(MessageFormat
+//							.format("pktablename[{0}] pkcolumnname[{1}]fktablename[{2}] fkcolumnname[{3}] updaterule[{4}] deleterule[{5}] fkname[{6}] pkname[{7}]",
+//									rs.getString("PKTABLE_NAME"),
+//									rs.getString("PKCOLUMN_NAME"),
+//									rs.getString("FKTABLE_NAME"),
+//									rs.getString("FKCOLUMN_NAME"),
+//									rs.getString("UPDATE_RULE"),
+//									rs.getString("DELETE_RULE"),
+//									rs.getString("FK_NAME"),
+//									rs.getString("PK_NAME")));
+//
+//				}
+//				log.debug("----imported keys in table " + table.getTableName());
+			} finally {
+				if (rs != null) {
+					rs.close();
+				}
+			}
+
+		}
+		log.debug("stop enhanceWithReferences");
 		return database;
+	}
+
+	private ForeignKeyReference getForeignKeyReference(ResultSet rs, Database database) throws SQLException {
+		Table parentTable = database.getTables().get(rs.getString("PKTABLE_NAME"));
+		Column parentColumn = parentTable.getColumns().get(rs.getString("PKCOLUMN_NAME"));
+		
+		Table childTable = database.getTables().get(rs.getString("FKTABLE_NAME"));
+		Column childColumn = childTable.getColumns().get(rs.getString("FKCOLUMN_NAME"));
+		
+		String referenceName = rs.getString("FK_NAME");
+		
+		ForeignKeyReference foreignKeyReference = new ForeignKeyReference(referenceName, parentTable, parentColumn, childTable, childColumn);
+		
+//		log.debug(MessageFormat
+//				.format("pktablename[{0}] pkcolumnname[{1}]fktablename[{2}] fkcolumnname[{3}] updaterule[{4}] deleterule[{5}] fkname[{6}] pkname[{7}]",
+//						rs.getString("PKTABLE_NAME"),
+//						rs.getString("PKCOLUMN_NAME"),
+//						rs.getString("FKTABLE_NAME"),
+//						rs.getString("FKCOLUMN_NAME"),
+//						rs.getString("UPDATE_RULE"),
+//						rs.getString("DELETE_RULE"),
+//						rs.getString("FK_NAME"),
+//						rs.getString("PK_NAME")));
+		
+		
+		return foreignKeyReference;
 	}
 
 }

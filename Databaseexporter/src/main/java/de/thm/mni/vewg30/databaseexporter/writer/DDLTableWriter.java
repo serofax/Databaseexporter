@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.thm.mni.vewg30.databaseexporter.model.Column;
+import de.thm.mni.vewg30.databaseexporter.model.ForeignKeyReference;
 import de.thm.mni.vewg30.databaseexporter.model.Table;
 
 public class DDLTableWriter extends PrintWriter {
@@ -22,31 +23,34 @@ public class DDLTableWriter extends PrintWriter {
 		for (Column column : table.getColumns().values()) {
 			println(getColumnString(column));
 		}
-		
+
 		String primaryKeyString = getPrimaryKeys(table);
-		if(!primaryKeyString.isEmpty()){
+		if (!primaryKeyString.isEmpty()) {
 			println(primaryKeyString);
 		}
 
 		println(");");
 	}
 
+	
+
 	private String getPrimaryKeys(Table table) {
 		boolean containsPrimaryKey = false;
-		StringBuilder builder = new StringBuilder("\tprimary key(");
-		for(Column column: table.getColumns().values()){
-			if(column.isPrimaryKey()){
-				builder.append(column.getColumnName());
-				builder.append(",");
-				containsPrimaryKey = true;
-			}
+		StringBuilder builder = new StringBuilder("\tPRIMARY KEY(");
+		for (Column column : table.getPrimaryKeys()) {
+			builder.append(column.getColumnName());
+			builder.append(",");
+			containsPrimaryKey = true;
 		}
-		builder.deleteCharAt(builder.length()-1);
+		builder.deleteCharAt(builder.length() - 1);
 		builder.append(")");
-		if(!containsPrimaryKey){
+//		if(!table.getChildTableForeignKeys().isEmpty()){
+//			builder.append(",");
+//		}
+		if (!containsPrimaryKey) {
 			return "";
 		}
-		
+
 		return builder.toString();
 	}
 
