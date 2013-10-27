@@ -1,14 +1,9 @@
 package de.thm.mni.vewg30.databaseexporter.writer;
 
-import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import de.thm.mni.vewg30.databaseexporter.model.Column;
-import de.thm.mni.vewg30.databaseexporter.model.ForeignKeyReference;
 import de.thm.mni.vewg30.databaseexporter.model.Table;
 
 public class DDLTableWriter extends PrintWriter {
@@ -30,9 +25,8 @@ public class DDLTableWriter extends PrintWriter {
 		}
 
 		println(");");
+		flush();
 	}
-
-	
 
 	private String getPrimaryKeys(Table table) {
 		boolean containsPrimaryKey = false;
@@ -44,9 +38,6 @@ public class DDLTableWriter extends PrintWriter {
 		}
 		builder.deleteCharAt(builder.length() - 1);
 		builder.append(")");
-//		if(!table.getChildTableForeignKeys().isEmpty()){
-//			builder.append(",");
-//		}
 		if (!containsPrimaryKey) {
 			return "";
 		}

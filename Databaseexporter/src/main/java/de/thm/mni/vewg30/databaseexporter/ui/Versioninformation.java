@@ -1,4 +1,4 @@
-package de.thm.mni.vewg30.databaseexporter;
+package de.thm.mni.vewg30.databaseexporter.ui;
 
 public enum Versioninformation {
 	NAME("Database Exporter"),AUTHOR("Vincent Elliott Wagner"),VERSION("0.1");

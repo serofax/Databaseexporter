@@ -58,6 +58,7 @@ public class DDLDatabaseWriter extends PrintWriter {
 							.getTables().size(), database.getDatabaseName()));
 
 		}
+		flush();
 
 		log.debug("stop writeDatabase");
 	}

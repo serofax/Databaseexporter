@@ -4,10 +4,10 @@
 
 	<groupId>de.thm.mni.vewg30</groupId>
 	<artifactId>databaseexporter</artifactId>
-	<version>0.0.1</version>
+	<version>0.2.1</version>
 	<packaging>jar</packaging>
 
-	<name>databaseexporter</name>
+	<name>Databaseexporter</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -38,11 +38,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<inherited>true</inherited>
 				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.thm.mni.vewg30.databaseexporter.ExporterUI</mainClass>
+							<mainClass>de.thm.mni.vewg30.databaseexporter.ui.ExporterUI</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 					</archive>
 				</configuration>
@@ -66,7 +69,7 @@
 										<include>**</include>
 									</includes>
 								</filter>
-								
+
 								<filter>
 									<artifact>mysql:mysql-connector-java</artifact>
 									<includes>
@@ -84,4 +87,7 @@
 		</plugins>
 
 	</build>
+	<organization>
+		<name>Vincent Elliott Wagner</name>
+	</organization>
 </project>

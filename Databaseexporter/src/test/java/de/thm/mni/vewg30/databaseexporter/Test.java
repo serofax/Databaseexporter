@@ -22,6 +22,7 @@ import de.thm.mni.vewg30.databaseexporter.model.Column;
 import de.thm.mni.vewg30.databaseexporter.model.Database;
 import de.thm.mni.vewg30.databaseexporter.model.Table;
 import de.thm.mni.vewg30.databaseexporter.writer.DDLDatabaseWriter;
+import de.thm.mni.vewg30.databaseexporter.writer.DMLDatabaseWriter;
 
 public class Test {
 	private static String driver = "com.mysql.jdbc.Driver";
@@ -57,19 +58,23 @@ public class Test {
 			enhancer.enhanceDatabase(database);
 			DMLModelExtractor dmlExtractor = new DMLModelExtractor(con);
 			database = dmlExtractor.getDatabaseWithData(database);
-			
+
 			DDLDatabaseWriter writer = new DDLDatabaseWriter(
 					new OutputStreamWriter(System.out));
 			writer.writeDatabase(database);
 			writer.flush();
-			System.out.println("finished");
-			
+			DMLDatabaseWriter dmlWriter = new DMLDatabaseWriter(
+					new OutputStreamWriter(System.out));
+			dmlWriter.writeDatabase(database);
+			dmlWriter.flush();
 
-//			for (Table table : database.getTables().values()) {
-//				for (Column column : table.getColumns().values()) {
-//					System.out.println(column);
-//				}
-//			}
+			System.out.println("finished");
+
+			// for (Table table : database.getTables().values()) {
+			// for (Column column : table.getColumns().values()) {
+			// System.out.println(column);
+			// }
+			// }
 
 			// System.out.println(database);
 			// System.out.println(metaData.getConnection().getCatalog());

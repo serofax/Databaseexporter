@@ -1,6 +1,5 @@
 package de.thm.mni.vewg30.databaseexporter.ddl;
 
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;

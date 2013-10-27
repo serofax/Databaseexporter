@@ -1,12 +1,12 @@
 package de.thm.mni.vewg30.databaseexporter.model.rawtypes;
 
+import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return (String) object;
+			return withApostrophe((String) object);
 		}
 	}, //
 	DATE(Types.DATE, "date") {
@@ -36,7 +36,7 @@ public enum SQLTypes {
 		@Override
 		public String getFormattedString(Object object) {
 
-			return formatter.format((Date) object);
+			return withApostrophe(formatter.format((Date) object));
 		}
 	}, //
 	DECIMAL(Types.DECIMAL, "decimal") {
@@ -50,7 +50,7 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return formatter.format((Double) object);
+			return formatter.format((BigDecimal) object);
 		}
 	}, //
 	DOUBLE(Types.DOUBLE, "double") {
@@ -64,7 +64,7 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return formatter.format((Double) object);
+			return formatter.format((BigDecimal) object);
 		}
 	}, //
 
@@ -79,7 +79,7 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return formatter.format((Float) object);
+			return formatter.format((BigDecimal) object);
 		}
 	}, //
 
@@ -105,7 +105,7 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return formatter.format((Double) object);
+			return formatter.format((BigDecimal) object);
 		}
 	}, //
 	REAL(Types.REAL, "real") {
@@ -129,7 +129,7 @@ public enum SQLTypes {
 				
 		@Override
 		public String getFormattedString(Object object) {
-			return formatter.format((Date)object);
+			return withApostrophe(formatter.format((Date)object));
 		}
 	}, //
 	TIMESTAMP(Types.TIMESTAMP, "timestamp") {
@@ -137,7 +137,7 @@ public enum SQLTypes {
 		
 		@Override
 		public String getFormattedString(Object object) {
-			return formatter.format((Date)object);
+			return withApostrophe(formatter.format((Date)object));
 		}
 	}, //
 	TINYINT(Types.TINYINT, "tinyint") {
@@ -160,7 +160,7 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return (String)object;
+			return withApostrophe((String)object);
 		}
 	} //
 
@@ -198,6 +198,10 @@ public enum SQLTypes {
 			result += ")";
 		}
 		return result;
+	}
+	
+	private static String withApostrophe(String s){
+		return "'" + s + "'";
 	}
 
 	public String getDDLColumnLength(Column column) {
