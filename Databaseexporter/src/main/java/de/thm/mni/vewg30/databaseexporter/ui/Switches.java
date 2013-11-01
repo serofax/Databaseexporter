@@ -17,7 +17,8 @@ public enum Switches {
 	TO_CONSOLE("--to-console", "--tc", "If you use "
 			+ DDL_FILE.getSwitchLiteralLong() + " or "
 			+ DML_FILE.getSwitchLiteralLong()
-			+ " the content will be printed on the console")//
+			+ " the content will be printed on the console"),//
+	HELP("--help","This help")
 	;
 
 	private String switchLiteralLong;

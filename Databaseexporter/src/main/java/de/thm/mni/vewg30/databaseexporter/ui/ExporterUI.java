@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -36,8 +37,14 @@ public class ExporterUI {
 
 	private void parseArguments(String[] args) {
 		ArgumentParser parser = new ArgumentParser(args);
+		if(Arrays.asList(args).contains(Switches.HELP.getSwitchLiteralLong())){
+			printHelp();
+			System.exit(0);
+		}
+		
+		
 		try {
-			configuration = parser.getConfiguration();
+			configuration = parser.getConfiguration();			
 		} catch (ArgumentParserExeption e) {
 			log.error("error while parsing arguments", e);
 			printError(e.getMessage());
@@ -73,7 +80,8 @@ public class ExporterUI {
 		if (text != null) {
 			return text;
 		} else {
-			return "(UNDEFINED because this information was not exported)";
+			log.warn("This information is defined if the app is packed in a jar");
+			return "UNDEFINED";
 		}
 	}
 
@@ -88,14 +96,6 @@ public class ExporterUI {
 		}
 
 		log.debug("printed help");
-	}
-
-	public static void main(String[] args) {
-		log.info("Startup programm");
-		log.info(MessageFormat.format("Arguments are [{0}]",
-				Arrays.toString(args)));
-		ExporterUI exporter = new ExporterUI(args);
-		exporter.execute();
 	}
 
 	private void execute() {
@@ -162,6 +162,8 @@ public class ExporterUI {
 		FileWriter fileWriter = null;
 		try {
 			if (configuration.getDdlFile() != null) {
+				configuration.getDdlFile().getParentFile().mkdirs();
+				configuration.getDdlFile().createNewFile();
 				fileWriter = new FileWriter(configuration.getDdlFile());
 				if (configuration.isToConsoleDDL()) {
 					MultiWriter multiWriter = new MultiWriter(new Writer[] {
@@ -199,6 +201,8 @@ public class ExporterUI {
 		FileWriter fileWriter = null;
 		try {
 			if (configuration.getDmlFile() != null) {
+				configuration.getDmlFile().getParentFile().mkdir();
+				configuration.getDmlFile().createNewFile();
 				fileWriter = new FileWriter(configuration.getDmlFile());
 				if (configuration.isToConsoleDDL()) {
 					MultiWriter multiWriter = new MultiWriter(new Writer[] {
@@ -246,6 +250,14 @@ public class ExporterUI {
 		printError(message, t);
 		System.out.println("Program will be terminated");
 		System.exit(-1);
+	}
+
+	public static void main(String[] args) {
+		log.info("Startup programm");
+		log.info(MessageFormat.format("Arguments are [{0}]",
+				Arrays.toString(args)));
+		ExporterUI exporter = new ExporterUI(args);
+		exporter.execute();
 	}
 
 }

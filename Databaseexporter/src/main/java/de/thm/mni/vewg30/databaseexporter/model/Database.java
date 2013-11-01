@@ -5,9 +5,7 @@ import java.util.Map;
 
 public class Database {
 	private String databaseName;
-	private Map<String,Table> tables = new LinkedHashMap<String,Table>();
-
-	
+	private Map<String, Table> tables = new LinkedHashMap<String, Table>();
 
 	public Database(String databaseName) {
 		this.databaseName = databaseName;
@@ -17,10 +15,10 @@ public class Database {
 		return databaseName;
 	}
 
-	public Map<String,Table> getTables() {
+	public Map<String, Table> getTables() {
 		return tables;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -52,6 +50,5 @@ public class Database {
 			return false;
 		return true;
 	}
-
 
 }

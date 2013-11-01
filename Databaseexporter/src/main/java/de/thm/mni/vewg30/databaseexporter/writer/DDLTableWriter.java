@@ -59,5 +59,8 @@ public class DDLTableWriter extends PrintWriter {
 
 	private void addColumnAttributes(Column column, StringBuilder builder) {
 		builder.append(column.getNullType().getDDLColumnNull(column));
+		if (column.isAutoIncrement()) {
+			builder.append(" AUTO_INCREMENT");
+		}
 	}
 }

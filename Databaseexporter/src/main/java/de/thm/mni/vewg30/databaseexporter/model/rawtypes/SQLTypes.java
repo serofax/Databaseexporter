@@ -108,10 +108,10 @@ public enum SQLTypes {
 			return formatter.format((BigDecimal) object);
 		}
 	}, //
-	REAL(Types.REAL, "real") {
-		
+	REAL(Types.REAL, "real") {		
 		private DecimalFormat formatter = (DecimalFormat) NumberFormat
 				.getNumberInstance(Locale.US);
+		
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSetAndDecimalPrecision(column);
@@ -163,7 +163,6 @@ public enum SQLTypes {
 			return withApostrophe((String)object);
 		}
 	} //
-
 	;
 
 	private int javaTypeInt;
@@ -176,6 +175,11 @@ public enum SQLTypes {
 		for (SQLTypes type : SQLTypes.values()) {
 			types.put(type.javaTypeInt, type);
 		}
+	}
+
+	private SQLTypes(int javaType, String sqlLiteral) {
+		this.javaTypeInt = javaType;
+		this.sqlLiteral = sqlLiteral;
 	}
 
 	private static String getOnlyColumnLengthIfSet(Column column) {
@@ -209,11 +213,6 @@ public enum SQLTypes {
 	}
 
 	public abstract String getFormattedString(Object object);
-
-	private SQLTypes(int javaType, String sqlLiteral) {
-		this.javaTypeInt = javaType;
-		this.sqlLiteral = sqlLiteral;
-	}
 
 	public int getJavaType() {
 		return javaTypeInt;

@@ -13,7 +13,7 @@ public class Table {
 
 	private Set<ForeignKeyReference> parentTableForeignKeys = new HashSet<ForeignKeyReference>();
 	private Set<ForeignKeyReference> childTableForeignKeys = new HashSet<ForeignKeyReference>();
-	
+
 	private Set<Row> rows = new HashSet<Row>();
 
 	public Table(String tableName) {
@@ -48,7 +48,8 @@ public class Table {
 		return parentTableForeignKeys;
 	}
 
-	public void setParentTableForeignKeys(Set<ForeignKeyReference> parentTableForeignKeys) {
+	public void setParentTableForeignKeys(
+			Set<ForeignKeyReference> parentTableForeignKeys) {
 		this.parentTableForeignKeys = parentTableForeignKeys;
 	}
 
@@ -56,7 +57,8 @@ public class Table {
 		return childTableForeignKeys;
 	}
 
-	public void setChildTableForeignKeys(Set<ForeignKeyReference> childTableForeignKeys) {
+	public void setChildTableForeignKeys(
+			Set<ForeignKeyReference> childTableForeignKeys) {
 		this.childTableForeignKeys = childTableForeignKeys;
 	}
 

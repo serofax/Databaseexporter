@@ -12,8 +12,9 @@ import de.thm.mni.vewg30.databaseexporter.model.rawtypes.SQLNullType;
 import de.thm.mni.vewg30.databaseexporter.model.rawtypes.SQLTypes;
 
 public class DDLColumnModelBuilder {
-	private static final Logger log = Logger.getLogger(DDLColumnModelBuilder.class);
-	
+	private static final Logger log = Logger
+			.getLogger(DDLColumnModelBuilder.class);
+
 	private ResultSet rs;
 	private Table table;
 
@@ -25,20 +26,34 @@ public class DDLColumnModelBuilder {
 	public Column createColumn() throws SQLException {
 		String columnName = getColumnName();
 		SQLTypes sqlType = getSQLType();
-		if(log.isDebugEnabled()){
-			log.debug(MessageFormat.format("start createColumn for column [{0}] in table [{1}]", columnName,table.getTableName()));
+		if (log.isDebugEnabled()) {
+			log.debug(MessageFormat.format(
+					"start createColumn for column [{0}] in table [{1}]",
+					columnName, table.getTableName()));
 		}
 		Column result = new Column(table, columnName, sqlType);
 		result.setColumnSize(getColumnSize());
 		result.setDecimalDigits(getDecimalDigits());
-		
+		result.setAutoIncrement(getAutoIncrement());
+
 		result.setNullType(getNullType());
-		
-		
-		if(log.isDebugEnabled()){
-			log.debug(MessageFormat.format("stop createColumn with result [{0}]", result));
+
+		if (log.isDebugEnabled()) {
+			log.debug(MessageFormat.format(
+					"stop createColumn with result [{0}]", result));
 		}
 		return result;
+	}
+
+	private boolean getAutoIncrement() throws SQLException {
+		String yesNo = rs.getString("IS_AUTOINCREMENT");
+		if ("YES".equalsIgnoreCase(yesNo)) {
+			return true;
+		}
+		if ("NO".equalsIgnoreCase(yesNo)) {
+			return false;
+		}
+		return false;
 	}
 
 	private SQLNullType getNullType() throws SQLException {
@@ -47,9 +62,9 @@ public class DDLColumnModelBuilder {
 	}
 
 	private int getDecimalDigits() throws SQLException {
-		
+
 		int dezimalDigits = rs.getInt("DECIMAL_DIGITS");
-		if(rs.wasNull()){
+		if (rs.wasNull()) {
 			return Column.NOTSET_INT_VALUE;
 		}
 		return dezimalDigits;

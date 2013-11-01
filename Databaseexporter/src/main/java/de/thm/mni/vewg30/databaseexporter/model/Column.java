@@ -19,9 +19,9 @@ public class Column {
 	private boolean autoIncrement = false;
 	private Set<ForeignKeyReference> parentColumnForeignKeys = new HashSet<ForeignKeyReference>();
 	private Set<ForeignKeyReference> childColumnForeignKeys = new HashSet<ForeignKeyReference>();
-	
-//	private boolean isPrimaryKey = false;
-//	private Column isReferenceTo = null;
+
+	// private boolean isPrimaryKey = false;
+	// private Column isReferenceTo = null;
 
 	public Column(Table table, String columnName, SQLTypes columnType) {
 		this.table = table;
@@ -89,7 +89,8 @@ public class Column {
 		return parentColumnForeignKeys;
 	}
 
-	public void setParentColumnForeignKeys(Set<ForeignKeyReference> parentColumnForeignKeys) {
+	public void setParentColumnForeignKeys(
+			Set<ForeignKeyReference> parentColumnForeignKeys) {
 		this.parentColumnForeignKeys = parentColumnForeignKeys;
 	}
 
@@ -97,7 +98,8 @@ public class Column {
 		return childColumnForeignKeys;
 	}
 
-	public void setChildColumnForeignKeys(Set<ForeignKeyReference> childColumnForeignKeys) {
+	public void setChildColumnForeignKeys(
+			Set<ForeignKeyReference> childColumnForeignKeys) {
 		this.childColumnForeignKeys = childColumnForeignKeys;
 	}
 
@@ -170,8 +172,6 @@ public class Column {
 	public boolean isDecimalDigitsSet() {
 		return decimalDigits != NOTSET_INT_VALUE;
 	}
-	
-	
-	
+
 
 }

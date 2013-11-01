@@ -33,14 +33,14 @@ public class DDLRawModelExtractor {
 
 		String databaseName = metaData.getConnection().getCatalog();
 		Database result = new Database(databaseName);
-		Map<String, Table> tables = result.getTables();
 
 		ResultSet rs = null;
 		try {
 			rs = metaData.getTables(null, null, "%", new String[] { "TABLE" });
 			while (rs.next()) {
 				String tableName = rs.getString("TABLE_NAME");
-				tables.put(tableName, getTable(tableName));
+				Table table = getTable(tableName);
+				result.getTables().put(tableName, table);
 			}
 		} finally {
 			if (rs != null) {
@@ -64,20 +64,19 @@ public class DDLRawModelExtractor {
 		return result;
 	}
 
-	public Table getTable(String tableName) throws SQLException {
+	private Table getTable(String tableName) throws SQLException {
 		if (log.isDebugEnabled()) {
 			log.debug(MessageFormat.format("start getTable for table [{0}]",
 					tableName));
 		}
 
 		Table result = new Table(tableName);
-		Map<String, Column> columns = result.getColumns();
 		ResultSet rs = null;
 		try {
 			rs = metaData.getColumns(null, null, tableName, "%");
 			while (rs.next()) {
 				Column column = getColumn(rs, result);
-				columns.put(column.getColumnName(), column);
+				result.getColumns().put(column.getColumnName(), column);
 			}
 		} finally {
 			if (rs != null) {

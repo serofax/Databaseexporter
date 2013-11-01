@@ -83,6 +83,7 @@ public class Configuration {
 	public void setToConsoleDML(boolean toConsoleDML) {
 		this.toConsoleDML = toConsoleDML;
 	}
+	
 
 	@Override
 	public String toString() {

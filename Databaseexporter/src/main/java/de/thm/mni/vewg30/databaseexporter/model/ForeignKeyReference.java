@@ -9,14 +9,14 @@ public class ForeignKeyReference {
 	private Table childTable;
 	private Column childColumn;
 
-	public ForeignKeyReference(Table parentTable, Column parentColumn, Table childTable,
-			Column childColumn) {
+	public ForeignKeyReference(Table parentTable, Column parentColumn,
+			Table childTable, Column childColumn) {
 		this("FK" + System.nanoTime(), parentTable, parentColumn, childTable,
 				childColumn);
 	}
 
-	public ForeignKeyReference(String name, Table parentTable, Column parentColumn,
-			Table childTable, Column childColumn) {
+	public ForeignKeyReference(String name, Table parentTable,
+			Column parentColumn, Table childTable, Column childColumn) {
 		super();
 		this.name = name;
 		this.parentTable = parentTable;
@@ -73,8 +73,6 @@ public class ForeignKeyReference {
 		this.childColumn = childColumn;
 	}
 
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -99,5 +97,6 @@ public class ForeignKeyReference {
 			return false;
 		return true;
 	}
+
 
 }
