@@ -134,7 +134,7 @@ public class ExporterUI {
 			System.out.println("Export is finished. Good Bye");
 
 		} catch (SQLException e) {
-			printFatalError(e.getMessage());
+			printFatalError(e.getMessage(),e);
 		} finally {
 			try {
 
@@ -146,7 +146,7 @@ public class ExporterUI {
 					con.close();
 				}
 			} catch (SQLException e) {
-				printFatalError(e.getMessage());
+				printFatalError(e.getMessage(),e);
 			}
 		}
 

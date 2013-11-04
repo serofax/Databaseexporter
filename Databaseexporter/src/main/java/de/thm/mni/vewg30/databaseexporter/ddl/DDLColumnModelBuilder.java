@@ -34,7 +34,6 @@ public class DDLColumnModelBuilder {
 		Column result = new Column(table, columnName, sqlType);
 		result.setColumnSize(getColumnSize());
 		result.setDecimalDigits(getDecimalDigits());
-		result.setAutoIncrement(getAutoIncrement());
 
 		result.setNullType(getNullType());
 
@@ -45,16 +44,6 @@ public class DDLColumnModelBuilder {
 		return result;
 	}
 
-	private boolean getAutoIncrement() throws SQLException {
-		String yesNo = rs.getString("IS_AUTOINCREMENT");
-		if ("YES".equalsIgnoreCase(yesNo)) {
-			return true;
-		}
-		if ("NO".equalsIgnoreCase(yesNo)) {
-			return false;
-		}
-		return false;
-	}
 
 	private SQLNullType getNullType() throws SQLException {
 		int value = rs.getInt("NULLABLE");

@@ -58,8 +58,12 @@ public class DMLTableWriter extends PrintWriter {
 
 		while (iterator.hasNext()) {
 			Column column = iterator.next();
-			String formattedString = column.getColumnType().getFormattedString(
-					row.getItems().get(column));
+			Object object = row.getItems().get(column);
+			String formattedString = "NULL";
+			if(object != null){
+				formattedString = column.getColumnType().getFormattedString(
+						row.getItems().get(column));
+			}
 			builder.append(formattedString);
 			if (iterator.hasNext()) {
 				builder.append(",");

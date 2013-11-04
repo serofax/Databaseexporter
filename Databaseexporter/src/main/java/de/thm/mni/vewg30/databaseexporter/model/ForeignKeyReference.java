@@ -1,13 +1,19 @@
 package de.thm.mni.vewg30.databaseexporter.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ForeignKeyReference {
 	private String name;
 
+	// ALTER TABLE ChildTable
+	// ADD FOREIGN KEY (FK1,FK2) REFERENCES ParentTable(PK1,PK2)
+
 	private Table parentTable;
-	private Column parentColumn;
+	private List<Column> parentColumns = new ArrayList<Column>();
 
 	private Table childTable;
-	private Column childColumn;
+	private List<Column> childColumns = new ArrayList<Column>();
 
 	public ForeignKeyReference(Table parentTable, Column parentColumn,
 			Table childTable, Column childColumn) {
@@ -16,21 +22,28 @@ public class ForeignKeyReference {
 	}
 
 	public ForeignKeyReference(String name, Table parentTable,
-			Column parentColumn, Table childTable, Column childColumn) {
+			Column parentColumn, Table childTable,
+			Column childColumn) {
 		super();
 		this.name = name;
 		this.parentTable = parentTable;
-		this.parentColumn = parentColumn;
+		this.parentColumns.add(parentColumn);
 		this.childTable = childTable;
-		this.childColumn = childColumn;
+		this.childColumns.add(childColumn);
 	}
 
 	public void performDataConssistency() {
 		parentTable.getParentTableForeignKeys().add(this);
-		parentColumn.getParentColumnForeignKeys().add(this);
+		for (Column column : parentColumns) {
+			column.getParentColumnForeignKeys().add(this);
+		}
+		// parentColumns.getParentColumnForeignKeys().add(this);
 
 		childTable.getChildTableForeignKeys().add(this);
-		childColumn.getChildColumnForeignKeys().add(this);
+		// childColumns.getChildColumnForeignKeys().add(this);
+		for (Column column : childColumns) {
+			column.getChildColumnForeignKeys().add(this);
+		}
 	}
 
 	public String getName() {
@@ -49,14 +62,6 @@ public class ForeignKeyReference {
 		this.parentTable = parentTable;
 	}
 
-	public Column getParentColumn() {
-		return parentColumn;
-	}
-
-	public void setParentColumn(Column parentColumn) {
-		this.parentColumn = parentColumn;
-	}
-
 	public Table getChildTable() {
 		return childTable;
 	}
@@ -65,12 +70,20 @@ public class ForeignKeyReference {
 		this.childTable = childTable;
 	}
 
-	public Column getChildColumn() {
-		return childColumn;
+	public List<Column> getParentColumns() {
+		return parentColumns;
 	}
 
-	public void setChildColumn(Column childColumn) {
-		this.childColumn = childColumn;
+	public void setParentColumns(List<Column> parentColumns) {
+		this.parentColumns = parentColumns;
+	}
+
+	public List<Column> getChildColumns() {
+		return childColumns;
+	}
+
+	public void setChildColumns(List<Column> childColumns) {
+		this.childColumns = childColumns;
 	}
 
 	@Override
@@ -97,6 +110,5 @@ public class ForeignKeyReference {
 			return false;
 		return true;
 	}
-
 
 }

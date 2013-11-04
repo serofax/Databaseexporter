@@ -49,7 +49,6 @@ public enum Switches {
 	}
 
 	public boolean isSwitch(String param) {
-
 		return switchLiteralLong.equals(param)
 				|| (switchLiteralShort != null && switchLiteralShort
 						.equals(param));

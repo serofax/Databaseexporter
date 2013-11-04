@@ -1,6 +1,7 @@
 package de.thm.mni.vewg30.databaseexporter.model.rawtypes;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -11,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.thm.mni.vewg30.databaseexporter.model.Column;
+import de.thm.mni.vewg30.databaseexporter.util.FormatterUtil;
 
 /**
  * The most important SQL Types
@@ -19,6 +21,65 @@ import de.thm.mni.vewg30.databaseexporter.model.Column;
  * 
  */
 public enum SQLTypes {
+	ARRAY(Types.CHAR, "array") {
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
+		}
+	}, //
+	BIGINT(Types.BIGINT, "bigint") {
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return object.toString();
+		}
+	}, //
+	BINARY(Types.BINARY, "binary") {
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return byteArrayToString((byte[]) object);
+		}
+	}, //
+	BIT(Types.BIT, "bit") {
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			if(object instanceof byte[]){
+				return byteArrayToString((byte[]) object);
+			}else{
+				if(object instanceof Boolean){
+					return ((Boolean)object)?"x'1'":"x'0'";
+				}
+				throw new IllegalArgumentException("Cannot format " + object +" for type " + name());
+			}
+		}
+	}, //
+	BLOB(Types.BLOB, "blob") {
+		@Override
+		public String getFormattedString(Object object) {
+			return byteArrayToString((byte[])object);
+		}
+	}, //
+	BOOLEAN(Types.BOOLEAN, "boolean") {
+		@Override
+		public String getFormattedString(Object object) {
+			return object.toString();
+		}
+	}, //
+
 	CHAR(Types.CHAR, "char") {
 		@Override
 		public String getDDLColumnLength(Column column) {
@@ -27,7 +88,24 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return withApostrophe((String) object);
+			return withApostrophe(object.toString());
+		}
+	}, //
+	CLOB(Types.CLOB, "clob") {
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
+		}
+	}, //
+	DATALINK(Types.DATALINK, "datalink") {
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
 		}
 	}, //
 	DATE(Types.DATE, "date") {
@@ -51,6 +129,13 @@ public enum SQLTypes {
 		@Override
 		public String getFormattedString(Object object) {
 			return formatter.format((BigDecimal) object);
+		}
+	}, //
+	DISTINCT(Types.DISTINCT, "distinct") {
+
+		@Override
+		public String getFormattedString(Object object) {
+			return object.toString();
 		}
 	}, //
 	DOUBLE(Types.DOUBLE, "double") {
@@ -91,7 +176,48 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return ((Integer) object).toString();
+			return object.toString();
+		}
+	}, //
+	LONGNVARCHAR(Types.LONGNVARCHAR, "longnvarchar") {
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
+		}
+	}, //
+	LONGVARBINARY(Types.LONGVARBINARY, "longvarbinary") {
+		@Override
+		public String getFormattedString(Object object) {
+			return byteArrayToString((byte[])object);
+		}
+	}, //
+	LONGVARCHAR(Types.LONGVARCHAR, "longvarchar") {
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
+		}
+	}, //
+	NCHAR(Types.NCHAR, "nchar") {
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
+		}
+	}, //
+	NCLOB(Types.NCLOB, "nclob") {
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
+		}
+	}, //
+	NULL(Types.NULL, "null") {
+		@Override
+		public String getFormattedString(Object object) {
+			return object.toString();
 		}
 	}, //
 	NUMERIC(Types.NUMERIC, "numeric") {
@@ -108,36 +234,60 @@ public enum SQLTypes {
 			return formatter.format((BigDecimal) object);
 		}
 	}, //
-	REAL(Types.REAL, "real") {		
+	NVARCHAR(Types.NVARCHAR, "nvarchar") {
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return withApostrophe(object.toString());
+		}
+	}, //
+	REAL(Types.REAL, "real") {
 		private DecimalFormat formatter = (DecimalFormat) NumberFormat
 				.getNumberInstance(Locale.US);
-		
+
 		@Override
 		public String getDDLColumnLength(Column column) {
 			return getOnlyColumnLengthIfSetAndDecimalPrecision(column);
 		}
-		
+
 		@Override
 		public String getFormattedString(Object object) {
 			return formatter.format((Double) object);
 		}
-		
+
+	}, //
+		// OTHER ...
+	SMALLINT(Types.SMALLINT, "smallint") {
+		@Override
+		public String getDDLColumnLength(Column column) {
+			return getOnlyColumnLengthIfSet(column);
+		}
+
+		@Override
+		public String getFormattedString(Object object) {
+			return object.toString();
+		}
 	}, //
 
 	TIME(Types.TIME, "time") {
 		private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-				
+
 		@Override
 		public String getFormattedString(Object object) {
-			return withApostrophe(formatter.format((Date)object));
+			return withApostrophe(formatter.format((Date) object));
 		}
 	}, //
 	TIMESTAMP(Types.TIMESTAMP, "timestamp") {
-		private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+		private SimpleDateFormat formatter = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+
 		@Override
 		public String getFormattedString(Object object) {
-			return withApostrophe(formatter.format((Date)object));
+			return withApostrophe(formatter.format((Date) object));
 		}
 	}, //
 	TINYINT(Types.TINYINT, "tinyint") {
@@ -148,8 +298,8 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return ((Integer)object).toString();
-			
+			return object.toString();
+
 		}
 	}, //
 	VARCHAR(Types.VARCHAR, "varchar") {
@@ -160,7 +310,7 @@ public enum SQLTypes {
 
 		@Override
 		public String getFormattedString(Object object) {
-			return withApostrophe((String)object);
+			return withApostrophe(object.toString());
 		}
 	} //
 	;
@@ -204,14 +354,24 @@ public enum SQLTypes {
 		return result;
 	}
 	
-	private static String withApostrophe(String s){
-		return "'" + s + "'";
+	private static String byteArrayToString(byte[] array){
+		return "x'" + FormatterUtil.bytesToHex(array) + "'";
+	}
+
+	private static String withApostrophe(String s) {
+		return "'" + s.replace("'", "''") + "'";
 	}
 
 	public String getDDLColumnLength(Column column) {
 		return "";
 	}
 
+	/**
+	 * Format the object for the specified type.
+	 * <b>DOES NOT TAKE NULL!!!</b>
+	 * @param object
+	 * @return
+	 */
 	public abstract String getFormattedString(Object object);
 
 	public int getJavaType() {
@@ -235,5 +395,4 @@ public enum SQLTypes {
 		throw new IllegalArgumentException("The javaSQLType[" + javaType
 				+ "] is unknown");
 	}
-
 }

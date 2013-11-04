@@ -4,6 +4,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -79,33 +81,38 @@ public class DDLModelEnhancer {
 						"do foreignKeyReference for table [{0}]",
 						table.getTableName()));
 			}
+
 			ResultSet rs = null;
+			Set<ForeignKeyReference> foreignKeySet = new HashSet<ForeignKeyReference>();
 			try {
 				rs = databaseMetaData.getImportedKeys(null, null,
 						table.getTableName());
-				while(rs.next()){
-					ForeignKeyReference fkRef = getForeignKeyReference(rs,database);
+				while (rs.next()) {
+					ForeignKeyReference fkRef = getForeignKeyReference(rs,
+							database, foreignKeySet);
+					foreignKeySet.add(fkRef);
+				}
+				for (ForeignKeyReference fkRef : foreignKeySet) {
 					fkRef.performDataConssistency();
 				}
-				
-				
-				
-				
-//				log.debug("----import keys in table " + table.getTableName());
-//				while (rs.next()) {
-//					log.debug(MessageFormat
-//							.format("pktablename[{0}] pkcolumnname[{1}]fktablename[{2}] fkcolumnname[{3}] updaterule[{4}] deleterule[{5}] fkname[{6}] pkname[{7}]",
-//									rs.getString("PKTABLE_NAME"),
-//									rs.getString("PKCOLUMN_NAME"),
-//									rs.getString("FKTABLE_NAME"),
-//									rs.getString("FKCOLUMN_NAME"),
-//									rs.getString("UPDATE_RULE"),
-//									rs.getString("DELETE_RULE"),
-//									rs.getString("FK_NAME"),
-//									rs.getString("PK_NAME")));
-//
-//				}
-//				log.debug("----imported keys in table " + table.getTableName());
+
+				// log.debug("----import keys in table " +
+				// table.getTableName());
+				// while (rs.next()) {
+				// log.debug(MessageFormat
+				// .format("pktablename[{0}] pkcolumnname[{1}]fktablename[{2}] fkcolumnname[{3}] updaterule[{4}] deleterule[{5}] fkname[{6}] pkname[{7}]",
+				// rs.getString("PKTABLE_NAME"),
+				// rs.getString("PKCOLUMN_NAME"),
+				// rs.getString("FKTABLE_NAME"),
+				// rs.getString("FKCOLUMN_NAME"),
+				// rs.getString("UPDATE_RULE"),
+				// rs.getString("DELETE_RULE"),
+				// rs.getString("FK_NAME"),
+				// rs.getString("PK_NAME")));
+				//
+				// }
+				// log.debug("----imported keys in table " +
+				// table.getTableName());
 			} finally {
 				if (rs != null) {
 					rs.close();
@@ -117,30 +124,60 @@ public class DDLModelEnhancer {
 		return database;
 	}
 
-	private ForeignKeyReference getForeignKeyReference(ResultSet rs, Database database) throws SQLException {
-		Table parentTable = database.getTables().get(rs.getString("PKTABLE_NAME"));
-		Column parentColumn = parentTable.getColumns().get(rs.getString("PKCOLUMN_NAME"));
-		
-		Table childTable = database.getTables().get(rs.getString("FKTABLE_NAME"));
-		Column childColumn = childTable.getColumns().get(rs.getString("FKCOLUMN_NAME"));
-		
+	private ForeignKeyReference getForeignKeyReference(ResultSet rs,
+			Database database,
+			Set<ForeignKeyReference> alreadyCreatedForeignKeys)
+			throws SQLException {
+		Table parentTable = database.getTables().get(
+				rs.getString("PKTABLE_NAME"));
+		Column parentColumn = parentTable.getColumns().get(
+				rs.getString("PKCOLUMN_NAME"));
+
+		Table childTable = database.getTables().get(
+				rs.getString("FKTABLE_NAME"));
+		Column childColumn = childTable.getColumns().get(
+				rs.getString("FKCOLUMN_NAME"));
+
 		String referenceName = rs.getString("FK_NAME");
-		
-		ForeignKeyReference foreignKeyReference = new ForeignKeyReference(referenceName, parentTable, parentColumn, childTable, childColumn);
-		
-//		log.debug(MessageFormat
-//				.format("pktablename[{0}] pkcolumnname[{1}]fktablename[{2}] fkcolumnname[{3}] updaterule[{4}] deleterule[{5}] fkname[{6}] pkname[{7}]",
-//						rs.getString("PKTABLE_NAME"),
-//						rs.getString("PKCOLUMN_NAME"),
-//						rs.getString("FKTABLE_NAME"),
-//						rs.getString("FKCOLUMN_NAME"),
-//						rs.getString("UPDATE_RULE"),
-//						rs.getString("DELETE_RULE"),
-//						rs.getString("FK_NAME"),
-//						rs.getString("PK_NAME")));
-		
-		
+		short numberInComposedFK = rs.getShort("KEY_SEQ");
+
+		ForeignKeyReference foreignKeyReference = null;
+		if (numberInComposedFK == 1) {
+			foreignKeyReference = new ForeignKeyReference(referenceName,
+					parentTable, parentColumn, childTable, childColumn);
+		} else {
+			foreignKeyReference = getForeignKeyReferenceFromSet(
+					alreadyCreatedForeignKeys, parentTable, childTable);
+			foreignKeyReference.getChildColumns().add(childColumn);
+			foreignKeyReference.getParentColumns().add(parentColumn);
+		}
+
+//		System.out.println("Key SEQ" + rs.getShort("KEY_SEQ"));
+
+		// log.debug(MessageFormat
+		// .format("pktablename[{0}] pkcolumnname[{1}]fktablename[{2}] fkcolumnname[{3}] updaterule[{4}] deleterule[{5}] fkname[{6}] pkname[{7}]",
+		// rs.getString("PKTABLE_NAME"),
+		// rs.getString("PKCOLUMN_NAME"),
+		// rs.getString("FKTABLE_NAME"),
+		// rs.getString("FKCOLUMN_NAME"),
+		// rs.getString("UPDATE_RULE"),
+		// rs.getString("DELETE_RULE"),
+		// rs.getString("FK_NAME"),
+		// rs.getString("PK_NAME")));
+
 		return foreignKeyReference;
+	}
+
+	private ForeignKeyReference getForeignKeyReferenceFromSet(
+			Set<ForeignKeyReference> alreadyCreatedForeignKeys,
+			Table parentTable, Table childTable) {
+		for (ForeignKeyReference fkRef : alreadyCreatedForeignKeys) {
+			if (fkRef.getChildTable().equals(childTable)
+					&& fkRef.getParentTable().equals(parentTable)) {
+				return fkRef;
+			}
+		}
+		throw new IllegalStateException("Cannot find ForeignKeyReference because it was not created before");
 	}
 
 }

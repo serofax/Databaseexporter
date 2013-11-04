@@ -16,7 +16,6 @@ public class Column {
 	private int decimalDigits = NOTSET_INT_VALUE;
 
 	private SQLNullType nullType = SQLNullType.UNKNOWN;
-	private boolean autoIncrement = false;
 	private Set<ForeignKeyReference> parentColumnForeignKeys = new HashSet<ForeignKeyReference>();
 	private Set<ForeignKeyReference> childColumnForeignKeys = new HashSet<ForeignKeyReference>();
 
@@ -76,15 +75,7 @@ public class Column {
 	public void setNullType(SQLNullType nullType) {
 		this.nullType = nullType;
 	}
-
-	public boolean isAutoIncrement() {
-		return autoIncrement;
-	}
-
-	public void setAutoIncrement(boolean autoIncrement) {
-		this.autoIncrement = autoIncrement;
-	}
-
+	
 	public Set<ForeignKeyReference> getParentColumnForeignKeys() {
 		return parentColumnForeignKeys;
 	}
@@ -103,11 +94,19 @@ public class Column {
 		this.childColumnForeignKeys = childColumnForeignKeys;
 	}
 
+
+	public boolean isColumnSizeSet() {
+		return columnSize != NOTSET_INT_VALUE;
+	}
+
+	public boolean isDecimalDigitsSet() {
+		return decimalDigits != NOTSET_INT_VALUE;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (autoIncrement ? 1231 : 1237);
 		result = prime
 				* result
 				+ ((childColumnForeignKeys == null) ? 0
@@ -133,11 +132,9 @@ public class Column {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Column))
 			return false;
 		Column other = (Column) obj;
-		if (autoIncrement != other.autoIncrement)
-			return false;
 		if (childColumnForeignKeys == null) {
 			if (other.childColumnForeignKeys != null)
 				return false;
@@ -164,14 +161,8 @@ public class Column {
 			return false;
 		return true;
 	}
-
-	public boolean isColumnSizeSet() {
-		return columnSize != NOTSET_INT_VALUE;
-	}
-
-	public boolean isDecimalDigitsSet() {
-		return decimalDigits != NOTSET_INT_VALUE;
-	}
+	
+	
 
 
 }
