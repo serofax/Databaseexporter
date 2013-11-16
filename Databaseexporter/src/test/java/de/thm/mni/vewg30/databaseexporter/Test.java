@@ -2,25 +2,17 @@ package de.thm.mni.vewg30.databaseexporter;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 
-import org.ietf.jgss.Oid;
 
 import de.thm.mni.vewg30.databaseexporter.ddl.DDLModelEnhancer;
 import de.thm.mni.vewg30.databaseexporter.ddl.DDLRawModelExtractor;
 import de.thm.mni.vewg30.databaseexporter.dml.DMLModelExtractor;
-import de.thm.mni.vewg30.databaseexporter.model.Column;
 import de.thm.mni.vewg30.databaseexporter.model.Database;
-import de.thm.mni.vewg30.databaseexporter.model.Table;
 import de.thm.mni.vewg30.databaseexporter.writer.DDLDatabaseWriter;
 import de.thm.mni.vewg30.databaseexporter.writer.DMLDatabaseWriter;
 

@@ -1,7 +1,9 @@
 package de.thm.mni.vewg30.databaseexporter.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,7 +11,7 @@ public class Table {
 
 	private String tableName;
 	private Map<String, Column> columns = new LinkedHashMap<String, Column>();
-	private Set<Column> primaryKeys = new HashSet<Column>();
+	private List<Column> primaryKeys = new ArrayList<Column>();
 
 	private Set<ForeignKeyReference> parentTableForeignKeys = new HashSet<ForeignKeyReference>();
 	private Set<ForeignKeyReference> childTableForeignKeys = new HashSet<ForeignKeyReference>();
@@ -36,11 +38,11 @@ public class Table {
 		this.columns = columns;
 	}
 
-	public Set<Column> getPrimaryKeys() {
+	public List<Column> getPrimaryKeys() {
 		return primaryKeys;
 	}
 
-	public void setPrimaryKeys(Set<Column> primaryKeys) {
+	public void setPrimaryKeys(List<Column> primaryKeys) {
 		this.primaryKeys = primaryKeys;
 	}
 

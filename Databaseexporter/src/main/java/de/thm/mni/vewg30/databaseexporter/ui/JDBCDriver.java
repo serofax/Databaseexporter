@@ -7,7 +7,7 @@ import de.thm.mni.vewg30.databaseexporter.exeptions.JDBCDriverDetectionException
 public enum JDBCDriver {
 
 	MYSQL("com.mysql.jdbc.Driver", "jdbc:mysql:"), //
-	POSTRGRESQL("org.postgresql.Driver", "jdbc:postgreql:"), //
+	POSTRGRESQL("org.postgresql.Driver", "jdbc:postgresql:"), //
 	JDBCODBC_BRIDGE("sun.jdbc.odbc.JdbcOdbcDriver", "jdbc:odbc:")//
 	;
 

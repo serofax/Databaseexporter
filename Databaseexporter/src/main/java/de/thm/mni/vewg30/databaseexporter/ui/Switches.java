@@ -9,11 +9,11 @@ public enum Switches {
 	DDL_FILE(
 			"--ddl-output-path",
 			"--ddl",
-			"Defines the path where the DDL-file will be created; The output on the console will be reduced by the ddl-commands use '--to-console' to print it anyways"), //
+			"Defines the path where the DDL-file will be created; The output on the console will be reduced by the ddl-commands use '--to-console' to print it anyway"), //
 	DML_FILE(
 			"--dml-output-path",
 			"--dml",
-			"Defines the path where the DML-file will be created; The output on the console will be reduced by the dml-commands use '--to-console' to print it anyways"), //
+			"Defines the path where the DML-file will be created; The output on the console will be reduced by the dml-commands use '--to-console' to print it anyway"), //
 	TO_CONSOLE("--to-console", "--tc", "If you use "
 			+ DDL_FILE.getSwitchLiteralLong() + " or "
 			+ DML_FILE.getSwitchLiteralLong()

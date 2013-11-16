@@ -55,7 +55,7 @@ public class ArgumentParser {
 	private void validateConfiguration(Configuration configuration)
 			throws JDBCDriverDetectionException {
 		if (configuration.getDriver() == null) {
-			log.debug("user does not specify jdbcdriver try to detect it");
+			log.debug("user did not specified jdbcdriver; try to detect it");
 			configuration.setDriver(JDBCDriver.getKnownDriverByURL(
 					configuration.getUrlPortDatabase())
 					.getJdbcDriverClassName());
@@ -107,6 +107,7 @@ public class ArgumentParser {
 					File file = new File(path);
 					configuration.setDmlFile(file);
 					iterator.remove();
+					continue;
 				} else {
 					throw createExpectingAnotherLiteral(Switches.DML_FILE);
 				}
@@ -115,6 +116,7 @@ public class ArgumentParser {
 			if (Switches.TO_CONSOLE.isSwitch(element)) {
 				iterator.remove();
 				toConsoleOnValidation = true;
+				continue;
 			}
 
 			if (Switches.CREDENTIALS.isSwitch(element)) {

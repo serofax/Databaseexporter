@@ -4,7 +4,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 

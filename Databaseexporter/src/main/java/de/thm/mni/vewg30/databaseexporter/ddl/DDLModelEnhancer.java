@@ -4,7 +4,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -55,12 +57,16 @@ public class DDLModelEnhancer {
 		try {
 			rs = databaseMetaData.getPrimaryKeys(null, null,
 					table.getTableName());
+			Map<Integer,Column> map = new HashMap<Integer, Column>();
 			while (rs.next()) {
+				
 				String columnName = rs.getString("COLUMN_NAME");
 				Column column = table.getColumns().get(columnName);
-				table.getPrimaryKeys().add(column);
-
-				// column.setPrimaryKey(true);
+				map.put((int) rs.getShort("KEY_SEQ"),column);
+			}
+			
+			for(int i =1;i<=map.size();++i){
+				table.getPrimaryKeys().add(map.get(i));
 			}
 		} finally {
 			if (rs != null) {

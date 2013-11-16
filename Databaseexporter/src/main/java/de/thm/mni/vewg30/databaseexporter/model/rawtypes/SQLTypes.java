@@ -1,7 +1,6 @@
 package de.thm.mni.vewg30.databaseexporter.model.rawtypes;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -332,36 +331,6 @@ public enum SQLTypes {
 		this.sqlLiteral = sqlLiteral;
 	}
 
-	private static String getOnlyColumnLengthIfSet(Column column) {
-		if (column.isColumnSizeSet()) {
-			return "(" + column.getColumnSize() + ")";
-		}
-		return "";
-	}
-
-	private static String getOnlyColumnLengthIfSetAndDecimalPrecision(
-			Column column) {
-		String result = "";
-
-		if (column.isColumnSizeSet()) {
-			result += "(" + column.getColumnSize();
-			if (column.isDecimalDigitsSet() && column.getDecimalDigits() != 0) {
-				result += "," + column.getDecimalDigits();
-			}
-
-			result += ")";
-		}
-		return result;
-	}
-	
-	private static String byteArrayToString(byte[] array){
-		return "x'" + FormatterUtil.bytesToHex(array) + "'";
-	}
-
-	private static String withApostrophe(String s) {
-		return "'" + s.replace("'", "''") + "'";
-	}
-
 	public String getDDLColumnLength(Column column) {
 		return "";
 	}
@@ -394,5 +363,37 @@ public enum SQLTypes {
 		}
 		throw new IllegalArgumentException("The javaSQLType[" + javaType
 				+ "] is unknown");
+	}
+	
+	//Helpermethods
+
+	private static String getOnlyColumnLengthIfSet(Column column) {
+		if (column.isColumnSizeSet()) {
+			return "(" + column.getColumnSize() + ")";
+		}
+		return "";
+	}
+
+	private static String getOnlyColumnLengthIfSetAndDecimalPrecision(
+			Column column) {
+		String result = "";
+	
+		if (column.isColumnSizeSet()) {
+			result += "(" + column.getColumnSize();
+			if (column.isDecimalDigitsSet() && column.getDecimalDigits() != 0) {
+				result += "," + column.getDecimalDigits();
+			}
+	
+			result += ")";
+		}
+		return result;
+	}
+
+	private static String byteArrayToString(byte[] array){
+		return "x'" + FormatterUtil.bytesToHex(array) + "'";
+	}
+
+	private static String withApostrophe(String s) {
+		return "'" + s.replace("'", "''") + "'";
 	}
 }
